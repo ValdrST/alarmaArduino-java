@@ -14,6 +14,8 @@ public class Ventana extends javax.swing.JFrame {
     /**
      * Creates new form Ventana
      */
+    Controlador controlador = new Controlador(4);
+    
     public Ventana() {
         initComponents();
     }
@@ -27,38 +29,182 @@ public class Ventana extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        btnEncender = new javax.swing.JButton();
+        btnPrender = new javax.swing.JButton();
         btnApagar = new javax.swing.JButton();
+        btnDetener = new javax.swing.JButton();
+        btnReiniciar = new javax.swing.JButton();
+        txtUltrasonico = new javax.swing.JLabel();
+        txtTemperatura = new javax.swing.JLabel();
+        txtLuminosidad = new javax.swing.JLabel();
+        txtProximidad = new javax.swing.JLabel();
+        btnPlotDist = new javax.swing.JButton();
+        btnPlotTemp = new javax.swing.JButton();
+        btnPlotLum = new javax.swing.JButton();
+        btnPlotProx = new javax.swing.JButton();
+        btnReporte = new javax.swing.JButton();
+        btnDistMax = new javax.swing.JButton();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        txtPuertoDisponibles = new javax.swing.JTextArea();
+        btnGetPuertos = new javax.swing.JButton();
+        tfPuerto = new javax.swing.JTextField();
+        btnSetPuerto = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        btnEncender.setBackground(new java.awt.Color(255, 255, 255));
-        btnEncender.setFont(btnEncender.getFont().deriveFont(btnEncender.getFont().getStyle() | java.awt.Font.BOLD));
-        btnEncender.setForeground(new java.awt.Color(0, 0, 0));
+        btnPrender.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                btnPrenderMouseClicked(evt);
+            }
+        });
+
+        btnApagar.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                btnApagarMouseClicked(evt);
+            }
+        });
+
+        btnReiniciar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnReiniciarActionPerformed(evt);
+            }
+        });
+
+        jScrollPane1.setViewportView(txtPuertoDisponibles);
+
+        btnGetPuertos.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                btnGetPuertosMouseClicked(evt);
+            }
+        });
+
+        btnSetPuerto.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                btnSetPuertoMouseClicked(evt);
+            }
+        });
+        btnSetPuerto.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSetPuertoActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(btnEncender)
-                    .addComponent(btnApagar, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(588, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(txtProximidad, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(txtLuminosidad, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(txtUltrasonico, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(txtTemperatura, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 139, Short.MAX_VALUE)
+                        .addComponent(btnGetPuertos)
+                        .addGap(18, 18, 18)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnSetPuerto)
+                        .addGap(18, 18, 18)
+                        .addComponent(tfPuerto, javax.swing.GroupLayout.PREFERRED_SIZE, 223, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(92, 92, 92)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(btnPrender)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(btnDetener, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(btnReiniciar)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(btnApagar, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 0, Short.MAX_VALUE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(btnDistMax, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(btnPlotLum, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(btnPlotTemp, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addGap(18, 18, 18)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                        .addComponent(btnPlotDist, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(btnPlotProx, javax.swing.GroupLayout.PREFERRED_SIZE, 169, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addComponent(btnReporte, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 169, javax.swing.GroupLayout.PREFERRED_SIZE))))))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(btnEncender)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 274, Short.MAX_VALUE)
-                .addComponent(btnApagar)
-                .addGap(64, 64, 64))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(txtUltrasonico)
+                            .addComponent(btnGetPuertos))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtTemperatura)
+                        .addGap(18, 18, 18)
+                        .addComponent(txtLuminosidad)
+                        .addGap(12, 12, 12)
+                        .addComponent(txtProximidad))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(tfPuerto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnSetPuerto))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnPrender)
+                    .addComponent(btnDetener)
+                    .addComponent(btnReiniciar)
+                    .addComponent(btnApagar))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 12, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(btnPlotTemp, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(19, 19, 19)
+                        .addComponent(btnPlotLum))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(btnPlotProx, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnPlotDist)))
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(btnReporte)
+                    .addComponent(btnDistMax))
+                .addGap(41, 41, 41))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void btnSetPuertoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSetPuertoActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnSetPuertoActionPerformed
+
+    private void btnPrenderMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnPrenderMouseClicked
+
+    }//GEN-LAST:event_btnPrenderMouseClicked
+
+    private void btnSetPuertoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnSetPuertoMouseClicked
+        controlador.setPuerto(tfPuerto.getText());
+    }//GEN-LAST:event_btnSetPuertoMouseClicked
+
+    private void btnGetPuertosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnGetPuertosMouseClicked
+        txtPuertoDisponibles.setText(controlador.verPuertos());
+    }//GEN-LAST:event_btnGetPuertosMouseClicked
+
+    private void btnReiniciarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReiniciarActionPerformed
+        controlador.terminarConexion();
+        controlador.iniciarConexion(controlador.getPuerto());
+    }//GEN-LAST:event_btnReiniciarActionPerformed
+
+    private void btnApagarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnApagarMouseClicked
+        controlador.terminarConexion();
+    }//GEN-LAST:event_btnApagarMouseClicked
 
     /**
      * @param args the command line arguments
@@ -97,6 +243,23 @@ public class Ventana extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnApagar;
-    private javax.swing.JButton btnEncender;
+    private javax.swing.JButton btnDetener;
+    private javax.swing.JButton btnDistMax;
+    private javax.swing.JButton btnGetPuertos;
+    private javax.swing.JButton btnPlotDist;
+    private javax.swing.JButton btnPlotLum;
+    private javax.swing.JButton btnPlotProx;
+    private javax.swing.JButton btnPlotTemp;
+    private javax.swing.JButton btnPrender;
+    private javax.swing.JButton btnReiniciar;
+    private javax.swing.JButton btnReporte;
+    private javax.swing.JButton btnSetPuerto;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTextField tfPuerto;
+    private javax.swing.JLabel txtLuminosidad;
+    private javax.swing.JLabel txtProximidad;
+    private javax.swing.JTextArea txtPuertoDisponibles;
+    private javax.swing.JLabel txtTemperatura;
+    private javax.swing.JLabel txtUltrasonico;
     // End of variables declaration//GEN-END:variables
 }

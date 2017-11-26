@@ -9,7 +9,7 @@ package alarmaarduino;
  *
  * @author valdr
  */
-public class AlarmaArduino implements Dispositivo{
+public class AlarmaArduino{
 
     /**
      * @param args the command line arguments
@@ -18,25 +18,4 @@ public class AlarmaArduino implements Dispositivo{
        Ventana gui = new Ventana();
         gui.setVisible(true);
     }
-
-    @Override
-    public void prender() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void apagar() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void reiniciar() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void detener() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-    
 }
