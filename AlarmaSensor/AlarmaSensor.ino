@@ -41,26 +41,13 @@ void loop() {
       int rep=0;
     while(estadoAlarma>=2 && !input.equals("reset")){
       activarAlarma();
+      
     }
+    imprimirSensores();
   }
   estadoAlarma=0;
   digitalWrite(ledRojo,LOW);
-  Serial.print("distancia=");
-  delay(10);
-  Serial.println(distancia());
-  delay(10);
-  Serial.print("temperatura=");
-  delay(10);
-  Serial.println(temperatura());
-  delay(10);
-  Serial.print("luz=");
-  delay(10);
-  Serial.println(luz());
-  delay(10);
-  Serial.print("proximidad=");
-  delay(10);
-  Serial.println(analogRead(proximidad));
-  delay(10);
+  imprimirSensores();
 }
 
 void resetearAlarma(){
@@ -75,6 +62,7 @@ void activarAlarma(){
   digitalWrite(ledRojo,LOW);
   digitalWrite(buzzer,LOW);
   delay(100);
+  imprimirSensores();
 }
 
 int distancia(){
@@ -104,3 +92,23 @@ int luz(){
     digitalWrite(ledVerde,LOW); 
   return brillo1;
 }
+
+void imprimirSensores(){
+  Serial.print("distancia=");
+  delay(10);
+  Serial.println(distancia());
+  delay(10);
+  Serial.print("temperatura=");
+  delay(10);
+  Serial.println(temperatura());
+  delay(10);
+  Serial.print("luz=");
+  delay(10);
+  Serial.println(luz());
+  delay(10);
+  Serial.print("proximidad=");
+  delay(10);
+  Serial.println(analogRead(proximidad));
+  delay(10);
+}
+
