@@ -6,13 +6,26 @@
 package alarma;
 
 import com.panamahitek.ArduinoException;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import jssc.SerialPortEvent;
 import jssc.SerialPortEventListener;
 import jssc.SerialPortException;
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartPanel;
+import org.jfree.chart.JFreeChart;
+import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.data.xy.XYSeries;
+import org.jfree.data.xy.XYSeriesCollection;
 
 /**
  *
@@ -25,6 +38,24 @@ public class Ventana extends javax.swing.JFrame {
      */
     Controlador controlador = new Controlador(4);
     static int ultrasonico,temperatura,luminosidad,proximidad;
+    static String fechaInicial;
+    final XYSeries serieTemp = new XYSeries("Temperatura");
+    final XYSeriesCollection coleccionTemp = new XYSeriesCollection();
+    JFreeChart graficaTemp;
+    
+    final XYSeries serieLum = new XYSeries("Luminosidad");
+    final XYSeriesCollection coleccionLum = new XYSeriesCollection();
+    JFreeChart graficaLum;
+    
+    final XYSeries serieProx = new XYSeries("Proximidad");
+    final XYSeriesCollection coleccionProx = new XYSeriesCollection();
+    JFreeChart graficaProx;
+    
+    final XYSeries serieDist = new XYSeries("Distancia");
+    final XYSeriesCollection coleccionDist = new XYSeriesCollection();
+    JFreeChart graficaDist;
+    static int u=0,t=0,l=0,p=0;
+        
     public Ventana() {
         initComponents();
     }
@@ -46,7 +77,6 @@ public class Ventana extends javax.swing.JFrame {
         btnPlotLum = new javax.swing.JButton();
         btnPlotProx = new javax.swing.JButton();
         btnReporte = new javax.swing.JButton();
-        btnDistMax = new javax.swing.JButton();
         btnPrender = new javax.swing.JButton();
         btnApagar = new javax.swing.JButton();
         btnDetener = new javax.swing.JButton();
@@ -57,7 +87,6 @@ public class Ventana extends javax.swing.JFrame {
         btnGetPuertos = new javax.swing.JButton();
         tfPuerto = new javax.swing.JTextField();
         btnSetPuerto = new javax.swing.JButton();
-        jPanel1 = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -75,19 +104,41 @@ public class Ventana extends javax.swing.JFrame {
         getContentPane().add(txtTemperatura, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 60, 340, 20));
 
         btnPlotTemp.setText("Grafica Temperatura");
+        btnPlotTemp.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                btnPlotTempMouseClicked(evt);
+            }
+        });
         getContentPane().add(btnPlotTemp, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 200, 410, -1));
 
         btnPlotLum.setText("Grafica Luminosidad");
+        btnPlotLum.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                btnPlotLumMouseClicked(evt);
+            }
+        });
         getContentPane().add(btnPlotLum, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 240, 410, -1));
 
         btnPlotProx.setText("Grafica Proximidad");
+        btnPlotProx.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                btnPlotProxMouseClicked(evt);
+            }
+        });
         getContentPane().add(btnPlotProx, new org.netbeans.lib.awtextra.AbsoluteConstraints(430, 200, 370, -1));
 
         btnReporte.setText("Generar Reporte");
-        getContentPane().add(btnReporte, new org.netbeans.lib.awtextra.AbsoluteConstraints(430, 280, 370, -1));
-
-        btnDistMax.setText("Establecer distancia maxima");
-        getContentPane().add(btnDistMax, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 280, 410, -1));
+        btnReporte.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                btnReporteMouseClicked(evt);
+            }
+        });
+        btnReporte.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnReporteActionPerformed(evt);
+            }
+        });
+        getContentPane().add(btnReporte, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 280, 790, -1));
 
         btnPrender.setText("Prender");
         btnPrender.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -117,6 +168,16 @@ public class Ventana extends javax.swing.JFrame {
         getContentPane().add(btnReiniciar, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 150, -1, -1));
 
         btnPlotDist.setText("Grafica Ultrasonico");
+        btnPlotDist.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                btnPlotDistMouseClicked(evt);
+            }
+        });
+        btnPlotDist.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                btnPlotDistKeyPressed(evt);
+            }
+        });
         getContentPane().add(btnPlotDist, new org.netbeans.lib.awtextra.AbsoluteConstraints(430, 240, 370, -1));
 
         txtPuertoDisponibles.setColumns(20);
@@ -150,50 +211,65 @@ public class Ventana extends javax.swing.JFrame {
         });
         getContentPane().add(btnSetPuerto, new org.netbeans.lib.awtextra.AbsoluteConstraints(440, 150, -1, -1));
 
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 290, Short.MAX_VALUE)
-        );
-
-        getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(840, 20, 300, 290));
-
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnPrenderMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnPrenderMouseClicked
         if(!Controlador.strpuerto.equals("")){
+            serieTemp.add(0,0);
+        coleccionTemp.addSeries(serieTemp);
+        graficaTemp = ChartFactory.createXYLineChart("Temperatura - Tiempo","Tiempo","Temperatura", coleccionTemp,PlotOrientation.VERTICAL,true,true,false);
+        
+        serieLum.add(0,0);
+        coleccionLum.addSeries(serieLum);
+        graficaLum = ChartFactory.createXYLineChart("Luminosidad - Tiempo","Tiempo","Luminosidad", coleccionLum,PlotOrientation.VERTICAL,true,true,false);
+        
+        serieProx.add(0,0);
+        coleccionProx.addSeries(serieProx);
+        graficaProx = ChartFactory.createXYLineChart("Proximidad - Tiempo","Tiempo","Proximidad", coleccionProx,PlotOrientation.VERTICAL,true,true,false);
+        
+        serieDist.add(0,0);
+        coleccionDist.addSeries(serieDist);
+        graficaDist = ChartFactory.createXYLineChart("Distancia - Tiempo","Tiempo","Distancia", coleccionDist,PlotOrientation.VERTICAL,true,true,false);
+            Date fechaActual = new Date();
+            fechaInicial= fechaActual.toString();
+            
             Controlador.sl = new SerialPortEventListener() {
             @Override
             public synchronized void serialEvent(SerialPortEvent spe) {
                 try {
                     if (controlador.arduino.isMessageAvailable()==true){
+                        
                         String inputLine = controlador.arduino.printMessage();
                         String [] parts = inputLine.split("=");
                         if(parts[0].equalsIgnoreCase("distancia")){
                             txtUltrasonico.setText("Estado Sensor Ultrasonico: " + parts[1]+"[cm]");
                             Ventana.ultrasonico=Integer.parseInt(parts[1]);
+                            u++;
+                            serieDist.add(u,Integer.parseInt(parts[1]));
+                            
                         }
                         if(parts[0].equalsIgnoreCase("temperatura")){
                             txtTemperatura.setText("Estado sensor Temperatura: " + parts[1]+"[°C]");
                             Ventana.temperatura=Integer.parseInt(parts[1]);
+                            t++;
+                            serieTemp.add(t,Integer.parseInt(parts[1]));
                         }
                         if(parts[0].equalsIgnoreCase("luz")){
                             txtLuminosidad.setText("Estado Sensor Luminosidad: " + parts[1]+"[L]");
                             Ventana.luminosidad=Integer.parseInt(parts[1]);
+                            l++;
+                            serieLum.add(l,Integer.parseInt(parts[1]));
                         }
                         if(parts[0].equalsIgnoreCase("proximidad")){
                             txtProximidad.setText("Estado sensor proximidad: " + parts[1]+"[U]");
                             Ventana.proximidad=Integer.parseInt(parts[1]);
+                            p++;
+                            serieProx.add(p,Integer.parseInt(parts[1]));
                         }
                         System.out.println(Arrays.toString(parts));
                     }
-                } catch (SerialPortException | ArduinoException ex) {
+                } catch (NumberFormatException |SerialPortException | ArduinoException ex) {
                     Logger.getLogger(Controlador.class.getName()).log(Level.SEVERE, null, ex);
                 }
                     
@@ -213,6 +289,10 @@ public class Ventana extends javax.swing.JFrame {
     private void btnReiniciarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReiniciarActionPerformed
         controlador.terminarConexion();
         controlador.iniciarConexion(controlador.getPuerto());
+        u=0;
+        t=0;
+        l=0;
+        p=0;
     }//GEN-LAST:event_btnReiniciarActionPerformed
 
     private void btnGetPuertosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnGetPuertosMouseClicked
@@ -237,6 +317,66 @@ public class Ventana extends javax.swing.JFrame {
     private void btnGetPuertosMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnGetPuertosMouseEntered
         // TODO add your handling code here:
     }//GEN-LAST:event_btnGetPuertosMouseEntered
+
+    private void btnPlotTempMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnPlotTempMouseClicked
+        ChartPanel plot =new ChartPanel(graficaTemp);
+        JFrame graficaT = new JFrame("grafica");
+        graficaT.getContentPane().add(plot);
+        graficaT.pack();
+        graficaT.setVisible(true);
+    }//GEN-LAST:event_btnPlotTempMouseClicked
+
+    private void btnPlotProxMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnPlotProxMouseClicked
+        ChartPanel plot =new ChartPanel(graficaProx);
+        JFrame graficaP = new JFrame("grafica");
+        graficaP.getContentPane().add(plot);
+        graficaP.pack();
+        graficaP.setVisible(true);
+    }//GEN-LAST:event_btnPlotProxMouseClicked
+
+    private void btnPlotLumMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnPlotLumMouseClicked
+        ChartPanel plot =new ChartPanel(graficaLum);
+        JFrame graficaL = new JFrame("grafica");
+        graficaL.getContentPane().add(plot);
+        graficaL.pack();
+        graficaL.setVisible(true);
+    }//GEN-LAST:event_btnPlotLumMouseClicked
+
+    private void btnPlotDistKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_btnPlotDistKeyPressed
+        
+    }//GEN-LAST:event_btnPlotDistKeyPressed
+
+    private void btnPlotDistMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnPlotDistMouseClicked
+       ChartPanel plot =new ChartPanel(graficaDist);
+        JFrame graficaD = new JFrame("grafica");
+        graficaD.getContentPane().add(plot);
+        graficaD.pack();
+        graficaD.setVisible(true);
+    }//GEN-LAST:event_btnPlotDistMouseClicked
+
+    private void btnReporteMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnReporteMouseClicked
+        Date fecha = new Date();
+        
+        String reporte ="inicio de lectura: "+ fechaInicial + "\n" + txtLuminosidad.getText()+"\n"+txtUltrasonico.getText()+"\n"+txtTemperatura.getText()+"\n"+txtProximidad.getText()+"\n"+"Fin de lectura: " + fecha.toString() ;
+        try {
+            String nFichero ="log"+fecha.getDay()+fecha.getMonth()+fecha.getYear()+fecha.getHours()+fecha.getMinutes()+fecha.getSeconds()+".txt";
+            File archivo = new File(nFichero);
+            FileWriter w = new FileWriter(archivo);
+            try (BufferedWriter bw = new BufferedWriter(w); PrintWriter wr = new PrintWriter(bw)) {
+                
+                wr.write(reporte);
+            }
+            JOptionPane.showMessageDialog(null, "Reporte"+nFichero+" creado Correctamente");
+            
+        } catch (IOException ex) {
+            Logger.getLogger(Ventana.class.getName()).log(Level.SEVERE, null, ex);
+        }
+                
+    }//GEN-LAST:event_btnReporteMouseClicked
+
+    private void btnReporteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReporteActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnReporteActionPerformed
 
     /**
      * @param args the command line arguments
@@ -277,7 +417,6 @@ public class Ventana extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnApagar;
     private javax.swing.JButton btnDetener;
-    private javax.swing.JButton btnDistMax;
     private javax.swing.JButton btnGetPuertos;
     private javax.swing.JButton btnPlotDist;
     private javax.swing.JButton btnPlotLum;
@@ -287,7 +426,6 @@ public class Ventana extends javax.swing.JFrame {
     private javax.swing.JButton btnReiniciar;
     private javax.swing.JButton btnReporte;
     private javax.swing.JButton btnSetPuerto;
-    private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextField tfPuerto;
     private javax.swing.JLabel txtLuminosidad;
